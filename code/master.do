@@ -15,3 +15,5 @@ global base /home/zmokhiber/projects/substate_geo/
 global code ${base}code/
 global data ${base}data/
 global acs_extracts ${data}acs_extracts/
+
+do ${code}puma_cd_county.do
