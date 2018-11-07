@@ -21,6 +21,11 @@ replace adj_wkswork = 51 if wkswork2 == 6
 
 *create hourly wage variable
 gen hrwage = incwage / (uhrswork * adj_wkswork)
+*remove non-wage earners
+drop if hrwage == 0
+*restrict ages in sample
+drop if age < 16 | age > 64
+tab age
 *getting some wierd values (lots of 0s and some 5 digit hourly wages)
 *sum hrwage if hrwage != 0, d
 *count if hrwage > 100
@@ -53,26 +58,46 @@ destring afact, replace
 tempfile puma_cd
 save `puma_cd'
 
+*create sample sizes by county for 1 through 5 years of data
 use `acs', clear
 joinby statefip puma using `puma_county', unm(both) _merge()
 tab _merge
 drop _merge
-d
-gcollapse (count) puma_counts = datanum (first) afact, by(year statefip puma county14)
 
-gen allocated_counts = puma_counts * afact
-sort  year statefip puma
+gen count1 = year == 2016
+gen count2 = year >= 2015 & year <= 2016
+gen count3 = year >= 2014 & year <= 2016
+gen count4 = year >= 2013 & year <= 2016
+gen count5 = year >= 2012 & year <= 2016
 
-export delim ${data}county_counts_unw.csv, replace
+gen acount1 = count1 * afact
+gen acount2 = count2 * afact
+gen acount3 = count3 * afact
+gen acount4 = count4 * afact
+gen acount5 = count5 * afact
 
+gcollapse (sum) count1 count2 count3 count4 count5 acount* (first) statefip, by(county14)
+export delim ${output}county_counts_unw.csv, replace
+
+*create sample sizes by congressional district for 1 through 5 years of data
 use `acs', clear
+
 joinby statefip puma using `puma_cd', unm(both) _merge()
 tab _merge
 drop _merge
 
-gcollapse (count) puma_counts = datanum (first) afact, by(year statefip puma cd114)
+gen count1 = year == 2016
+gen count2 = year >= 2015 & year <= 2016
+gen count3 = year >= 2014 & year <= 2016
+gen count4 = year >= 2013 & year <= 2016
+gen count5 = year >= 2012 & year <= 2016
 
-gen allocated_counts = puma_counts * afact
-sort year statefip puma
+gen acount1 = count1 * afact
+gen acount2 = count2 * afact
+gen acount3 = count3 * afact
+gen acount4 = count4 * afact
+gen acount5 = count5 * afact
 
-export delim ${data}cd_counts_unw.csv, replace
+gcollapse (sum) count1 count2 count3 count4 count5 acount*, by(statefip cd114)
+li if statefip == 1
+export delim ${output}cd_counts_unw.csv, replace
