@@ -43,7 +43,7 @@ drop if age < 16
 *remove self employed workers
 drop if classwkr == 1
 
-keep year datanum serial pernum puma statefip hrwage pwstate2 pwpuma00 classwkr
+keep year datanum serial pernum puma perwt statefip hrwage pwstate2 pwpuma00 classwkr
 
 /* drop people who work abroad
 use pwstate2 when possible, use statefip otherwise (12.35%)
@@ -63,7 +63,7 @@ local base = `r(mean)'
 gen real_hrwage = hrwage * (`base'/cpiurs)
 
 *create quantiles
-egen wage_pctile = xtile(real_hrwage), by(pwstate2) nq(100)
+gquantiles wage_pctile = real_hrwage [aw=perwt], xtile nq(100) by(pw_state)
 
 tempfile acs
 save `acs'
@@ -84,8 +84,9 @@ drop if _merge == 2
 sum cpiurs if year == 2016
 local base = `r(mean)'
 gen real_wageotc = wageotc * (`base'/cpiurs)
-egen wage_pctile = xtile(real_wageotc), by(pwstate2) nq(100)
-keep real_wageotc wage_pctile year
+
+gquantiles wage_pctile = real_wageotc [aw=orgwgt], xtile nq(100) by(statefips)
+keep real_wageotc wage_pctile statefips year
 tempfile cps
 save `cps'
 
