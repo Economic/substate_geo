@@ -1,10 +1,15 @@
-*puma_cd_county.do
+*pw_puma_cd_county.do
 /*
 
 */
+
+*grab cpi data
+import delimited ${cpiurs}cpiurs_annual.csv, clear
+tempfile cpiurs
+save `cpiurs'
 *read ACS data
-!gunzip -k ${acs_extracts}usa_00003.dta.gz
-use ${acs_extracts}usa_00003.dta, clear
+!gunzip -k ${acs_extracts}usa_00004.dta.gz
+use ${acs_extracts}usa_00004.dta, clear
 replace incwage = . if incwage == 999999
 *check N/As on hours worked and weeks
 assert uhrswork == 0 if wkswork2 == 0
@@ -22,23 +27,69 @@ replace adj_wkswork = 51 if wkswork2 == 6
 *create hourly wage variable
 gen hrwage = incwage / (uhrswork * adj_wkswork)
 *remove non-wage earners
-drop if hrwage == 0
+drop if hrwage <= 0
+
+sum hrwage
 *restrict ages in sample
-drop if age < 16 | age > 64
-tab age
+drop if age < 16
+
 *getting some wierd values (lots of 0s and some 5 digit hourly wages)
 *sum hrwage if hrwage != 0, d
 *count if hrwage > 100
 *count if hrwage > 1000
 *count if hrwage > 10000
 *keep only needed vars for now
-keep year datanum serial pernum puma statefip hrwage
-d
-local acs_obs = `r(N)'
+
+*remove self employed workers
+drop if classwkr == 1
+
+keep year datanum serial pernum puma statefip hrwage pwstate2 pwpuma00 classwkr
+
+/* drop people who work abroad
+use pwstate2 when possible, use statefip otherwise (12.35%)
+*/
+gen pw_state = pwstate2
+replace pw_state = . if pw_state > 56
+replace pw_state = statefip if pw_state == 0
+
+gen pw_puma = pwpuma00
+replace pw_puma = puma if pwpuma00 == 0
+tab pw_state, missing
+*adjust wage variable
+merge m:1 year using `cpiurs'
+drop if _merge == 2
+sum cpiurs if year == 2016
+local base = `r(mean)'
+gen real_hrwage = hrwage * (`base'/cpiurs)
+
+*create quantiles
+egen wage_pctile = xtile(real_hrwage), by(pwstate2) nq(100)
+
 tempfile acs
 save `acs'
-erase ${acs_extracts}usa_00003.dta
+erase ${acs_extracts}usa_00004.dta
 
+*grab cps data
+append_extracts, begin(2012m1) end(2016m12) sample(org)
+drop if age < 16
+drop if selfemp == 1
+drop if selfinc == 1
+assert wageotc > 0
+count if wageotc ==.
+*sample size by state
+tab statefips if wageotc != .
+
+merge m:1 year using `cpiurs'
+drop if _merge == 2
+sum cpiurs if year == 2016
+local base = `r(mean)'
+gen real_wageotc = wageotc * (`base'/cpiurs)
+egen wage_pctile = xtile(real_wageotc), by(pwstate2) nq(100)
+keep real_wageotc wage_pctile year
+tempfile cps
+save `cps'
+
+sum hrwage
 *read county population
 import delim ${data}county_pop.csv, clear varnames(1) rowrange(3)
 tempfile county_pop
@@ -76,9 +127,12 @@ save `puma_cd'
 ***************************************************************
 
 use `acs', clear
+
+
 joinby statefip puma using `puma_county', unm(both) _merge()
 tab _merge
 drop _merge
+
 
 gen count1 = year == 2016
 gen count2 = year >= 2015 & year <= 2016

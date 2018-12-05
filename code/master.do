@@ -16,5 +16,6 @@ global code ${base}code/
 global data ${base}data/
 global output ${data}output/
 global acs_extracts ${data}acs_extracts/
-
-do ${code}puma_cd_county.do
+global acs_tables ${data}acs_tables/
+global cpiurs /home/zmokhiber/projects/cpi/output/
+*do ${code}puma_cd_county.do
