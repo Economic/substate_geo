@@ -7,6 +7,7 @@
 import delimited ${cpiurs}cpiurs_annual.csv, clear
 tempfile cpiurs
 save `cpiurs'
+
 *read ACS data
 !gunzip -k ${acs_extracts}usa_00004.dta.gz
 use ${acs_extracts}usa_00004.dta, clear
@@ -28,7 +29,6 @@ replace adj_wkswork = 51 if wkswork2 == 6
 gen hrwage = incwage / (uhrswork * adj_wkswork)
 *remove non-wage earners
 drop if hrwage <= 0
-
 sum hrwage
 *restrict ages in sample
 drop if age < 16
@@ -43,15 +43,12 @@ drop if age < 16
 *remove self employed workers
 drop if classwkr == 1
 
-keep year datanum serial pernum puma perwt statefip hrwage pwstate2 pwpuma00 classwkr
-
 /* drop people who work abroad
 use pwstate2 when possible, use statefip otherwise (12.35%)
 */
 gen pw_state = pwstate2
 replace pw_state = . if pw_state > 56
 replace pw_state = statefip if pw_state == 0
-
 gen pw_puma = pwpuma00
 replace pw_puma = puma if pwpuma00 == 0
 tab pw_state, missing
@@ -63,14 +60,15 @@ local base = `r(mean)'
 gen real_hrwage = hrwage * (`base'/cpiurs)
 
 *create quantiles
-gquantiles wage_pctile = real_hrwage [aw=perwt], xtile nq(100) by(pw_state)
-
+gquantiles qtile = real_hrwage [aw=perwt], xtile nq(100) by(pw_state)
+drop _merge
+rename statefip statefips
 tempfile acs
 save `acs'
 erase ${acs_extracts}usa_00004.dta
 
 *grab cps data
-append_extracts, begin(2012m1) end(2016m12) sample(org)
+append_extracts, begin(2014m1) end(2016m12) sample(org)
 drop if age < 16
 drop if selfemp == 1
 drop if selfinc == 1
@@ -81,16 +79,40 @@ tab statefips if wageotc != .
 
 merge m:1 year using `cpiurs'
 drop if _merge == 2
+drop _merge
 sum cpiurs if year == 2016
 local base = `r(mean)'
 gen real_wageotc = wageotc * (`base'/cpiurs)
 
-gquantiles wage_pctile = real_wageotc [aw=orgwgt], xtile nq(100) by(statefips)
-keep real_wageotc wage_pctile statefips year
+gquantiles qtile = real_wageotc [aw=orgwgt], xtile nq(100) by(statefips)
+
+
+*this is acting weird (only working on the first half of states???)
 tempfile cps
 save `cps'
 
-sum hrwage
+use `cps', clear
+binipolate real_wageotc [pw=orgwgt], binsize(.25) percentiles(1/99) by(statefips) collapsefun(gcollapse)
+*duplicate p99 to assign to 100th quantile in acs data
+gen p100_binned = p99_binned
+reshape long p, i(statefips) j(type) string
+split type, p(_)
+rename p pctile_wage
+destring type1, gen(qtile) /*named qtile for easy merging with acs data*/
+drop type type1
+rename type2 pctile_type
+drop if pctile_type == "classical"
+tempfile binned_cps
+save `binned_cps'
+
+use `acs', clear
+*merge cps percentile wages onto acs quantiles
+merge m:1 qtile statefips using `binned_cps'
+drop _merge
+save ${output}acs_imputed_wages_12_16, replace
+!gzip ${output}acs_imputed_wages_12_16.dta
+
+/* Ignore for now
 *read county population
 import delim ${data}county_pop.csv, clear varnames(1) rowrange(3)
 tempfile county_pop
