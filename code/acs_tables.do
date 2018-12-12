@@ -1,38 +1,69 @@
 *clean up acs tables
+*B23001 tables by sex and age
 
+*read in metatdata
+import delim ${acs_tables}ACS_16_5YR_B23001_metadata.csv, clear
+drop in 1/3
+gen table_id = lower(v1)
+drop v1
+rename v2 description
+tempfile B23001_labels
+save `B23001_labels'
 
+*read in sex and age data
+foreach place in "cd" "county"{
+  import delim ${acs_tables}ACS_16_5YR_B23001_sex_age_`place'.csv, varnames(1) clear
+  drop in 1
+  reshape long hd, i(geoid geoid2) j(table_id) string
+  rename geoid2 countyfips
+  rename geodisplaylabel countyname
+  split table_id, p(_)
+  *drop margin of error
+  drop if table_id1 == "02"
+  rename hd value
+  replace table_id = "hd"+table_id
+  li in 1/5
+  drop table_id1 table_id2
+  destring value, replace
+  merge m:1 table_id using `B23001_labels'
+  *remove MOE ids from metadata
+  drop if _merge == 2
+  drop _merge
+  tempfile B23001_`place'
+  save `B23001_`place''
+}
+*C23002 ACS tables by race
+import delim ${acs_tables}ACS_16_5YR_C23002_metadata.csv, clear
+drop in 1/3
+gen table_id = lower(v1)
+drop v1
+rename v2 description
+tempfile C23002_labels
+save `C23002_labels'
 
+*read in all tables by race and place
+foreach race in "white" "black" "asian" "hispanic" {
+  foreach place in "cd" "county"{
+    import delim ${acs_tables}ACS_16_5YR_C23002_`race'_`place'.csv, varnames(1) clear
+    drop in 1
+    reshape long hd, i(geoid geoid2) j(table_id) string
+    rename geoid2 countyfips
+    rename geodisplaylabel countyname
+    split table_id, p(_)
+    *drop margin of error
+    drop if table_id1 == "02"
+    rename hd value
+    replace table_id = "hd"+table_id
+    li in 1/5
+    drop table_id1 table_id2
+    destring value, replace
+    merge m:1 table_id using `C23002_labels'
+    *remove MOE ids from metadata
+    drop if _merge == 2
+    drop _merge
+    tempfile C23002_`race'_`place'
+    save `C23002_`race'_`place''
+  }
+}
 
-
-/* just do manuall downloading
-*eventually try to do download acs data using API
-*sex by age group
-!curl -o ${data}sex_age.json "https://api.census.gov/data/2016/acs/acs5?get=NAME,group(B23001)&for=county:*"
-tempfile f0 f1 f2 f3
-copy ${data}sex_age.json `f0'
-hexdump `f0', analyze
-filefilter `f0' `f1', replace from(",\n") to("\n")
-filefilter `f1' `f2', replace from("[") to("")
-filefilter `f2' `f3', replace from("]") to("")
-import delimited `f3', clear
-drop *m *ea *ma v*
-d
-local N = _N
-drop in 2/`N'
-di
-*variable names
-drop state county
-reshape long b, i(name) j(var) string
-tostring b, replace
-replace b = ""
-reshape wide
-drop name
-d
-rename b23001_001e B23001_001E
-
-!curl -o ${data}b23001_metadata.json "https://api.census.gov/data/2016/acs/acs5/groups/B23001.json"
-clear
-
-insheetjson variable using ${data}b23001_metadata.json, showresponse
-
-li name state b23001_008e b23001_167 county in 1/4
+li in 1/6
