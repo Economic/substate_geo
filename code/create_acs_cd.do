@@ -69,4 +69,5 @@ assert hispagegroup ~= .
 * Calibrate sample weights
 ********************************************************************************
 do ${code}calibrate_weights_acs.do
+compress
 saveold ${output}acs_cd116.dta, replace version(13)
