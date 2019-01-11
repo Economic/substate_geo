@@ -6,9 +6,9 @@
 ********************************************************************************
 * ACS sample restrictions
 ********************************************************************************
-!gunzip -k ${acsdata}usa_00034.dta.gz
-use ${acsdata}usa_00034.dta, clear
-erase ${acsdata}usa_00034.dta
+!gunzip -k ${acsdata}usa_00035.dta.gz
+use ${acsdata}usa_00035.dta, clear
+erase ${acsdata}usa_00035.dta
 
 * exlude under 16
 drop if age < 16
