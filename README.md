@@ -4,7 +4,7 @@ This code create CD-level and county-level ACS data, useful for analyzing wage d
 Stata and SAS versions of the data are available on
 
 * maynard: `/data/acs/acs_cd116.dta.zip`
-* epi06: `\fdata0\epiextracts\acs_cd116.sas7bdat.zip`
+* epi06: `\fdata0\epiextracts\acs\acs_cd116.sas7bdat.zip`
 
 ## Sample weight calibration
 When analyzing these data, it is important that you use the appropriate sample weight described below, probably perwt2. The weights are created in three stages:
