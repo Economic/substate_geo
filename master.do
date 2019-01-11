@@ -19,5 +19,10 @@ global output data/output/
 
 * create ACS CD dataset
 * requires: acs_wages_imputed.dta
-* output: acs_cd116.dta
-do ${code}create_acs_cd.do
+* output: acs_tables.dta acs_cd116.dta
+*do ${code}create_acs_cd.do
+
+* analyze weights
+* requires: acs_tables.dta acs_cd116.dta
+* output:
+*do ${code}analyze_weights.do

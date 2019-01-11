@@ -70,3 +70,10 @@ foreach race in hispanic white black {
 gen empother = emp - (empwhite + empblack)
 gen empother1664 = emp1664 - (empwhite1664 + empblack1664)
 gen empother6599 = emp6599 - (empwhite6599 + empblack6599)
+
+gen empnonhispanic = emp - emphispanic
+gen empnonhispanic1664 = emp1664 - emphispanic1664
+gen empnonhispanic6599 = emp6599 - emphispanic6599
+
+* remove PR
+drop if cd115 == 7298

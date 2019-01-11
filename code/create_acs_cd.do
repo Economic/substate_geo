@@ -36,6 +36,11 @@ save `puma_cd'
 use ${output}acs_wages_imputed.dta, clear
 joinby statefips puma using `puma_cd', unm(both) _merge()
 assert _merge == 3
+drop _merge
+gen statecd116 = strofreal(statefips) + strofreal(cd116,"%02.0f")
+drop cd116
+rename statecd116 cd116
+destring cd116, replace
 
 
 ********************************************************************************
@@ -60,14 +65,8 @@ replace hispagegroup = 22 if hispanic == 0 & age >= 65
 assert hispagegroup ~= .
 
 
-
-save /tmp/acs_cdjoined.dta, replace
-
-use /tmp/acs_cdjoined.dta, clear
-
 ********************************************************************************
 * Calibrate sample weights
 ********************************************************************************
 do ${code}calibrate_weights_acs.do
-
 saveold ${output}acs_cd116.dta, replace version(13)
