@@ -53,3 +53,5 @@ foreach i of numlist `cd116levels' {
 	if `i' == 1 use `cd`i'', clear
 	append using `cd`i''
 }
+
+drop _one
