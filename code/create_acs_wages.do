@@ -41,27 +41,32 @@ drop if classwkr == 1
 * drop those working abroad
 drop if pwstate2 > 56
 
-* restrict to employed at work, or armed forces at work
-keep if empstatd == 10 | empstatd == 14
-
-
-********************************************************************************
-* Impute weeks worked
-********************************************************************************
-* output variable: adj_wkswork
-do ${code}impute_weeksworked.do
+* drop armed forces
+drop if (9670 <= ind & ind <= 9890) | (9800 <= occ & occ <= 9830)
 
 
 ********************************************************************************
 * Define place of work state & PUMA
 ********************************************************************************
-rename pwpuma00 pwpuma
-rename pwstate2 pwstate
+rename statefip statefips
+
+gen pwpuma = pwpuma00
+gen pwstate = pwstate
+
+* place of work is missing if currently not at work (even though worked last year)
+* assign place of residence in these cases (about 13% of sample)
+replace pwpuma = puma if pwpuma00 == 0
+replace pwstate = statefips if pwpuma00 == 0
 
 assert pwpuma > 0 & pwpuma ~= .
 assert pwstate > 0 & pwstate ~= .
 
-rename statefip statefips
+
+********************************************************************************
+* Impute weeks worked
+********************************************************************************
+* output variable: adj_wkswork0 and adj_wkswork1
+do ${code}impute_weeksworked.do
 
 
 ********************************************************************************
@@ -84,7 +89,7 @@ do ${code}impute_wages_cpsreg.do
 ********************************************************************************
 * output: hrwage2
 do ${code}impute_wages_cpsloc.do
-keep adj_wkswork age bpl citizen classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 majorind majorocc marst metro met2013 nchild nfams occ parent_* parttime pernum perwt poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year
+keep adj_wkswork* age bpl citizen classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 majorind majorocc marst metro met2013 nchild nfams occ parent_* parttime pernum perwt poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year
 compress
 
 saveold ${output}acs_wages_imputed.dta, replace version(13)
