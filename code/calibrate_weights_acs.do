@@ -61,8 +61,8 @@ foreach i of numlist `cd116levels' {
 local counter = 0
 foreach i of numlist `cd116levels' {
 	local counter = `counter' + 1
-	if `i' == 1 use `cd`i'', clear
-	append using `cd`i''
+	if `counter' == 1 use `cd`i'', clear
+	else append using `cd`i''
 }
 
 drop _one
