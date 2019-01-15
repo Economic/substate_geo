@@ -37,8 +37,14 @@ foreach sex in male female {
 gen emp = maletotal + femaletotal
 gen emp1664 = male1664 + female1664
 gen emp6599 = male6599 + female6599
+foreach sex in male female {
+	gen emp`sex'1624 = `sex'1619 + `sex'2021 + `sex'2224
+	gen emp`sex'2544 = `sex'2529 + `sex'3034 + `sex'3544
+	gen emp`sex'4564 = `sex'4554 + `sex'5559 + `sex'6061 + `sex'6264
+	gen emp`sex'6599 = `sex'6569 + `sex'7074 + `sex'7599
+}
 
-keep cd115 emp emp1664 emp6599
+keep cd115 emp emp1664 emp6599 emp*1624 emp*2544 emp*4564 emp*6599
 tempfile overall
 save `overall'
 
