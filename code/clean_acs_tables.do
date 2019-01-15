@@ -1,4 +1,4 @@
-import delim ${acsdata}ACS_16_5YR_B23001_sex_age_cd.csv, varnames(1) rowrange(3) clear
+import delim ${acsdata}ACS_17_5YR_B23001_sex_age_cd.csv, varnames(1) rowrange(3) clear
 destring hd01*, replace
 destring geoid2, replace
 rename geoid2 cd115
@@ -49,7 +49,7 @@ tempfile overall
 save `overall'
 
 foreach race in hispanic white black {
-	import delim ${acsdata}ACS_16_5YR_C23002_`race'_cd.csv, varnames(1) rowrange(3) clear
+	import delim ${acsdata}ACS_17_5YR_C23002_`race'_cd.csv, varnames(1) rowrange(3) clear
 	destring hd01*, replace
 	destring geoid2, replace
 	rename geoid2 cd115
