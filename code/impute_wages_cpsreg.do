@@ -85,8 +85,6 @@ replace majorind = 11 if 8560 <= ind & ind <= 8690
 replace majorind = 12 if 8770 <= ind & ind <= 9290
 * Public administration
 replace majorind = 13 if 9370 <= ind & ind <= 9590
-* Armed Forces
-replace majorind = 14 if 9670 <= ind & ind <= 9890
 assert majorind ~= .
 
 * Major occupation
@@ -111,8 +109,6 @@ replace majorocc = 8 if 7000 <= occ & occ <= 7630
 replace majorocc = 9 if 7700 <= occ & occ <= 8965
 *	Transportation and material moving occupations
 replace majorocc = 10 if 9000 <= occ & occ <= 9750
-*	Armed Forces
-replace majorocc = 11 if 9800 <= occ & occ <= 9840
 assert majorocc ~= .
 
 * part/full-time
@@ -124,7 +120,7 @@ tempfile acs
 save `acs'
 
 * CPS
-append_extracts, begin(2013m1) end(2017m12) sample(org)
+load_epiextracts, begin(2013m1) end(2017m12) sample(org)
 
 keep if wageotc > 0 & wageotc ~= .
 gen logwage = log(wageotc)
@@ -167,7 +163,6 @@ forvalues i = 0 / 1 {
 	reg logwage age* i.new_educ i.new_race i.new_married i.majorind i.majorocc i.parttime i.year i.statefips [aw=orgwgt] if female == `i'
 	eststo female`i'
 }
-bysort female: sum wageotc [aw=orgwgt], d
 
 use `acs', clear
 gen predlogwage = .

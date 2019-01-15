@@ -64,9 +64,21 @@ replace hispagegroup = 21 if hispanic == 0 & age >= 16 & age <= 64
 replace hispagegroup = 22 if hispanic == 0 & age >= 65
 assert hispagegroup ~= .
 
+gen byte sexagegroup = .
+replace sexagegroup = 11 if sex == 1 & age >= 16 & age <= 24
+replace sexagegroup = 12 if sex == 1 & age >= 25 & age <= 44
+replace sexagegroup = 13 if sex == 1 & age >= 45 & age <= 64
+replace sexagegroup = 14 if sex == 1 & age >= 65
+replace sexagegroup = 21 if sex == 2 & age >= 16 & age <= 24
+replace sexagegroup = 22 if sex == 2 & age >= 25 & age <= 44
+replace sexagegroup = 23 if sex == 2 & age >= 45 & age <= 64
+replace sexagegroup = 24 if sex == 2 & age >= 65
+assert sexagegroup ~= .
+
 
 ********************************************************************************
 * Calibrate sample weights
 ********************************************************************************
 do ${code}calibrate_weights_acs.do
+compress
 saveold ${output}acs_cd116.dta, replace version(13)
