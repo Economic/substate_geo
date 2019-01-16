@@ -20,7 +20,7 @@ save `acspctile'
 * going to stick with one year of data right now... not sure this is best.
 load_epiextracts, begin(2017m1) end(2017m12) sample(org) keep(wageotc statefips)
 keep if wageotc > 0 & wageotc ~= .
-binipolate wageotc [pw=orgwgt], binsize(0.25) p(1(1)99) by(statefips)
+binipolate wageotc [pw=orgwgt], binsize(0.25) p(1(1)99) by(statefips) collapsefun(gcollapse)
 drop p*classical
 reshape long p@_binned, i(statefips) j(xtile)
 rename p_binned pctile
