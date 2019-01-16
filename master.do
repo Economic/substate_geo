@@ -15,14 +15,15 @@ global output data/output/
 * create hourly wage in ACS data
 * requires: impute_weeksworked.do impute_wages_cpsreg.do impute_wages_cpsloc.do
 * output: acs_wages_imputed.dta
-do ${code}create_acs_wages.do
+*do ${code}create_acs_wages.do
 
 * create ACS CD dataset
 * requires: acs_wages_imputed.dta
 * output: acs_tables.dta acs_cd116.dta
-do ${code}create_acs_cd.do
+*do ${code}create_acs_cd.do
 
 * analyze weights
 * requires: acs_tables.dta acs_cd116.dta
 * output:
 do ${code}analyze_weights.do
+*do ${code}analyze_wages.do
