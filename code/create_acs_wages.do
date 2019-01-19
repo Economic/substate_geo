@@ -44,11 +44,6 @@ drop if pwstate2 > 56
 * drop armed forces
 drop if (9670 <= ind & ind <= 9890) | (9800 <= occ & occ <= 9830)
 
-* employment: keep only employed
-* this is what we have historically done
-* it is more consistent with weight calibration totals (i.e., the employed)
-keep if empstat == 1
-
 
 ********************************************************************************
 * Define place of work state & PUMA

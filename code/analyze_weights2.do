@@ -31,12 +31,12 @@ foreach cat in obs wpop {
 	replace running`cat'share = running`cat'share * 100
 }
 keep if obs <= 1000
-scatter runningobsshare obs if outcome == "teen", mcolor("`color1'") msize(small) mlwidth(thin) mfcolor(none) || scatter runningobsshare obs if outcome == "black", mcolor("`color2'") msize(small) mlwidth(thin) mfcolor(none) || scatter runningobsshare obs if outcome == "hispanic", mcolor("`color3'") msize(small) mlwidth(thin) mfcolor(none) xtitle("Observation count", size(small)) xlabel(0(100)1000, labsize(small)) ylabel(0(5)55, labsize(small) angle(0) gmin gmax) ytitle("Share (%)", size(small)) graphregion(color(white)) title("Share of Congressional districts with observations less than a given count", size(medium)) legend(label(1 "Teen") label(2 "Black") label(3 "Hispanic") position(10) ring(0) size(small) cols(1)) xsize(4) ysize(3)
+scatter runningobsshare obs if outcome == "teen", mcolor("`color1'") msize(small) mlwidth(thin) mfcolor(none) || scatter runningobsshare obs if outcome == "black", mcolor("`color2'") msize(small) mlwidth(thin) mfcolor(none) || scatter runningobsshare obs if outcome == "hispanic", mcolor("`color3'") msize(small) mlwidth(thin) mfcolor(none) xtitle("Observation count", size(small)) xlabel(0(100)1000, labsize(small)) ylabel(0(5)55, labsize(small) angle(0) gmin gmax) ytitle("Share (%)", size(small)) graphregion(color(white)) title("Share of Congressional districts with observations less than a given count", size(medium)) legend(label(1 "Teen") label(2 "Black") label(3 "Hispanic") position(10) ring(0) size(small) cols(1)) xsize(16) ysize(9)
 graph export ${output}cddemo_obs_threshold.pdf, replace
 
 
 stop
-
+*/
 ********************************************************************************
 * Confirm weights total to controls
 ********************************************************************************
@@ -80,7 +80,7 @@ merge 1:1 cd116 using ${output}acs_tables.dta, assert(3) nogenerate
 foreach var of varlist `analysisvars' {
 	foreach weight in wt1 wt2 {
 		gen pct`weight'`var' = (`weight'`var' / `var' - 1)*100
-		assert (`var') < 0.01
+		*assert (`var') < 0.01
 	}
 }
 */
@@ -171,7 +171,7 @@ save `sexft'
 */
 use `acs', clear
 keep if age >= 25
-binipolate rincwage [pw=perwt2], binsize(250) by(cd116 educ5) collapsefun(gcollapse)
+binipolate rincwage [pw=perwt1], binsize(250) by(cd116 educ5) collapsefun(gcollapse)
 keep cd116 educ5 p50_binned
 reshape wide p50_binned, i(cd116) j(educ5)
 rename p50_binned1 lthsp50
@@ -185,22 +185,16 @@ save `educ'
 
 
 use `educ', clear
-/*
-merge 1:1 cd116 using `ftpt', assert(3) nogenerate
-merge 1:1 cd116 using `sex', assert(3) nogenerate
-merge 1:1 cd116 using `sexft', assert(3) nogenerate
-merge 1:1 cd116 using `educ', assert(3) nogenerate
-*/
 foreach var of varlist _all {
 	rename `var' est_`var'
 }
 rename est_cd116 cd116
 
-save /tmp/acs_quality.dta, replace
+save /tmp/acs_quality2.dta, replace
+*/
 
 
-
-use /tmp/acs_quality.dta, clear
+use /tmp/acs_quality2.dta, clear
 merge 1:1 cd116 using `acsalltables', assert(3) nogenerate
 gen n = 1
 
@@ -241,7 +235,7 @@ local layoutopt graphregion(color(white)) title("Difference of our estimate from
 local legendopt legend(off) over(educlabel, label(labsize(small)) axis(noline) sort(educ)) asyvars showyvars
 
 graph hbox diff, `coloropt' `axislabelopt' `axistitleopt' `layoutopt' `legendopt'
-graph export ${output}boxplot.pdf, replace
+graph export ${output}boxplot1.pdf, replace
 stop
 
 
