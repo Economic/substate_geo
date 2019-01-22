@@ -1,4 +1,4 @@
-/*
+
 load_epiextracts, begin(2017m1) end(2017m12) sample(org)
 keep if wageotc > 0 & wageotc ~= .
 gen new_race = wbho_only
@@ -196,3 +196,26 @@ foreach group in all white black hispanic female male {
 	scatter logwage percentile if sample == "cps", msize(small) mcolor("`color4'") msymbol(circle) || scatter logwage percentile if sample == "acs" & weight == "perwt1", mcolor("`color2'") mfcolor(none) || scatter logwage percentile if sample == "acs" & weight == "perwt2", mcolor("`color1'") mfcolor(none) legend( position(10) ring(0) size(small) label(1 "CPS: wageotc") label(2 "ACS weight1: no raking") label(3 "ACS weight1: raked") cols(1)) ylabel(2(0.10)4.5, labsize(small) angle(0) gmin gmax) xtitle("Percentile", size(small)) xlabel(0(10)100, labsize(small)) ytitle("2017 log hourly wage", size(small)) graphregion(color(white)) title("``group'title'", size(medium)) ysize(3) xsize(4)
 	graph export ${output}acscps_wagedist_cd_`group'.pdf, replace
 }
+
+
+
+/* more wage analysis
+
+use ${output}acs_cd116.dta, clear
+keep if empstat == 1
+gen byte educ5 = .
+replace educ5 = 1 if educd <= 61
+replace educ5 = 2 if educd >= 63 & educd <= 64
+replace educ5 = 3 if educd >= 65 & educd <= 81
+replace educ5 = 4 if educd == 101
+replace educ5 = 5 if educd >= 114
+assert educ5 ~= .
+table educ5 [aw=perwt2], c(p50 hrwage2 mean hrwage2)
+
+load_epiextracts, begin(2017m1) end(2017m12) sample(org)
+keep if wageotc > 0 & wageotc ~= .
+table educ [aw=orgwgt], c(p50 wageotc mean wageotc)
+
+
+
+*/

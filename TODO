@@ -1,0 +1,8 @@
+TO-DO
+
+make sure CD code runs; run makefile to deploy new data
+
+move wage imputations to AFTER weight calibrations, so data outputs are:
+1. create_acs_prep.do: acs_prep.dta
+2. create_acs_state.do: acs_state_calibrated.dta; create_acs_cd.do: acs_cd_calibrated.dta
+3. acs_state_calibrated_wages.dta, acs_cd_calibrated_wages.dta (think I should be able to run the same do-files on these, impute_wages_cpsreg & impute_wages_cpsloc)

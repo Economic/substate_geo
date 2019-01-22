@@ -70,3 +70,5 @@ gen hrwage2 = cps_pctile1 + [(cps_pctile1-cps_pctile0)/(xtile1-xtile0)]*(xtile_i
 * assign pctile1 if xtile0 == 0
 replace hrwage2 = cps_pctile0 if xtile1 == 100
 replace hrwage2 = cps_pctile1 if xtile0 == 0
+
+drop *pctile* *xtile*

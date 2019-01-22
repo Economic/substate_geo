@@ -44,6 +44,9 @@ drop if pwstate2 > 56
 * drop armed forces
 drop if (9670 <= ind & ind <= 9890) | (9800 <= occ & occ <= 9830)
 
+* ONLY KEEP EMPLOYED
+keep if empstat == 1
+
 
 ********************************************************************************
 * Define place of work state & PUMA
@@ -51,7 +54,7 @@ drop if (9670 <= ind & ind <= 9890) | (9800 <= occ & occ <= 9830)
 rename statefip statefips
 
 gen pwpuma = pwpuma00
-gen pwstate = pwstate
+gen pwstate = pwstate2
 
 * place of work is missing if currently not at work (even though employed/worked last year)
 * assign place of residence in these cases (about 13% of pos inc, or only 2% of posinc and employed)
