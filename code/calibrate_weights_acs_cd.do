@@ -1,6 +1,7 @@
 * 0th stage adjustment:
 * scale to single year (divide by 5 years)
 gen perwt0 = perwt / 5
+drop perwt
 
 * 1st stage adjustment:
 * proportion according to population allocation factor

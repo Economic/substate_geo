@@ -38,6 +38,7 @@ assert new_educ ~= .
 * combine hispanic ethnicity and race to get a better match to CPS
 * without doing this, the ACS will show lower white share of population
 * and a sizable share of "Other major" race, for which there is no comparable category in the CPS race definitions
+cap drop hispanic
 gen hispanic = hispan >= 1 & hispan <= 4
 gen new_race = .
 * White

@@ -28,7 +28,7 @@ save `puma_cd'
 * Join CDs to ACS
 ********************************************************************************
 * this will duplicate observations that get mapped to multiple CDs
-use ${output}acs_wages_imputed.dta, clear
+use ${output}acs_prep.dta, clear
 joinby statefips puma using `puma_cd', unm(both) _merge()
 assert _merge == 3
 drop _merge
@@ -81,6 +81,34 @@ assert educgroup ~= .
 ********************************************************************************
 * Calibrate sample weights
 ********************************************************************************
+* output: variable perwt0 perwt1 perwt2
 do ${code}calibrate_weights_acs_cd.do
+saveold ${output}acs_cd_calibratedweights.dta, replace version(13)
+
+
+********************************************************************************
+* Impute wages based on CPS wage regression
+********************************************************************************
+* output: variable hrwage1
+use ${output}acs_cd_calibratedweights.dta, clear
+
+* remove self employed workers
+drop if classwkr == 1
+* should we also drop people who have large amounts of business/farm income?
+
+* drop those working abroad
+drop if pwstate > 56
+
+do ${code}impute_wages_cpsreg.do
+
+
+********************************************************************************
+* Modify imputation based on CPS state wage location
+********************************************************************************
+* output: variable hrwage2
+do ${code}impute_wages_cpsloc.do
+
+
+keep adj_wkswork* age bpl citizen classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 majorind majorocc marst metro met2013 nchild nfams occ parent_* parttime pernum perwt0 perwt1 perwt2 poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year
 compress
 saveold ${output}acs_cd116.dta, replace version(13)

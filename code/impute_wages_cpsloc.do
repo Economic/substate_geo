@@ -9,12 +9,13 @@ tempfile allacs
 save `allacs'
 
 * calculate linearally interpolated percentiles by state year in ACS
-binipolate hrwage1 [pw=perwt], binsize(0.25) p(1(1)99) by(year statefips) collapsefun(gcollapse)
+binipolate hrwage1 [pw=perwt2], binsize(0.25) p(1(1)99) by(year statefips) collapsefun(gcollapse)
 drop p*classical
 reshape long p@_binned, i(statefips year) j(xtile)
 rename p_binned pctile
 tempfile acspctile
 save `acspctile'
+save /tmp/acspctile, replace
 
 * grab pctiles from CPS
 * going to stick with one year of data right now... not sure this is best.
@@ -35,14 +36,14 @@ bysort statefips year: gen xtile = _n
 merge 1:1 statefips year xtile using `acspctile', assert(1 3) nogenerate
 drop xtile
 * calculate xtile for each wage using pctile cutpoints
-gquantiles xtile = hrwage1 [pw=perwt], xtile by(year statefips) cutpoints(pctile) cutby
+gquantiles xtile = hrwage1 [pw=perwt2], xtile by(year statefips) cutpoints(pctile) cutby
 drop pctile
 * calculate pctile for surrounding xtiles
-merge m:1 statefips year xtile using `acspctile', assert(1 3) nogenerate
+merge m:1 statefips year xtile using `acspctile', keep(1 3)
 rename xtile xtile1
 rename pctile acs_pctile1
 gen xtile = xtile1 - 1
-merge m:1 statefips year xtile using `acspctile', assert(1 3) nogenerate
+merge m:1 statefips year xtile using `acspctile', keep(1 3) nogenerate
 rename xtile xtile0
 rename pctile acs_pctile0
 * linearly interpolate xtile from surrounding xtiles using associated pctiles & wage value

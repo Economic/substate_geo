@@ -1,3 +1,4 @@
+
 ********************************************************************************
 * Process ACS tables
 ********************************************************************************
@@ -8,7 +9,7 @@ saveold ${output}acs_tables_state.dta, replace version(13)
 ********************************************************************************
 * Prepare ACS for ACS tables
 ********************************************************************************
-use ${output}acs_wages_imputed.dta, clear
+use ${output}acs_prep.dta, clear
 
 gen byte agegroup = .
 replace agegroup = 1 if age >= 16 & age <= 19
@@ -50,6 +51,36 @@ assert educgroup ~= .
 ********************************************************************************
 * Calibrate sample weights
 ********************************************************************************
+* output: variable perwt0 perwt1 perwt2
 do ${code}calibrate_weights_acs_state.do
+saveold ${output}acs_state_calibratedweights.dta, replace version(13)
+
+
+
+********************************************************************************
+* Impute wages based on CPS wage regression
+********************************************************************************
+* input: acs_state_calibratedweights.dta
+* output: variable hrwage1
+use ${output}acs_state_calibratedweights.dta, clear
+
+* remove self employed workers
+drop if classwkr == 1
+* should we also drop people who have large amounts of business/farm income?
+
+* drop those working abroad
+drop if pwstate > 56
+
+do ${code}impute_wages_cpsreg.do
+
+
+********************************************************************************
+* Modify imputation based on CPS state wage location
+********************************************************************************
+* output: variable hrwage2
+do ${code}impute_wages_cpsloc.do
+
+
+keep adj_wkswork* age bpl citizen classwkr classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 majorind majorocc marst metro met2013 nchild nfams occ parent_* parttime pernum perwt0 perwt1 perwt2 poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year
 compress
 saveold ${output}acs_state.dta, replace version(13)
