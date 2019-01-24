@@ -21,5 +21,3 @@ The data contain multiple hourly wage variables. The "best", hrwage2, is created
 1. hrwage0: annual income divided by the product of (imputed) weeks worked and usual hours worked per week
 2. hrwage1: the average of hrwage0 and a predicted hourly wage variable based on an OLS log(wage) prediction using CPS-ORG data.
 3. hrwage2: a state-specific distribution location adjustment of hrwage1 to match CPS-ORG derived state hourly wage distributions
-
-For hrwage0, the current weeks worked imputation is simply the median of the provided bracket. I'd like to improve this.

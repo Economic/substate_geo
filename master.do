@@ -25,7 +25,7 @@ global output data/output/
 * requires code: impute_wages_cpsreg.do impute_wages_cpsloc.do
 * output: acs_tables_state.dta acs_state.dta
 *********************************************************************************
-do ${code}create_acs_state.do
+*do ${code}create_acs_state.do
 
 ********************************************************************************
 * create ACS CD dataset
@@ -35,6 +35,10 @@ do ${code}create_acs_state.do
 ********************************************************************************
 *do ${code}create_acs_cd.do
 
+********************************************************************************
+* post analysis
+********************************************************************************
+do ${code}postanalysis.do
 
 * analyze weights
 * requires: acs_tables.dta acs_cd116.dta
