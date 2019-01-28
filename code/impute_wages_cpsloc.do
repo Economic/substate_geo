@@ -56,11 +56,11 @@ replace xtile_ipolate = 1 if xtile0 == 0
 
 * merge CPS percentiles
 rename xtile1 xtile
-merge m:1 statefips xtile using `cpspctile', assert(1 3) nogenerate
+merge m:1 statefips xtile using `cpspctile', keep(1 3) nogenerate
 rename pctile cps_pctile1
 rename xtile xtile1
 rename xtile0 xtile
-merge m:1 statefips xtile using `cpspctile', assert(1 3) nogenerate
+merge m:1 statefips xtile using `cpspctile', keep(1 3) nogenerate
 rename pctile cps_pctile0
 rename xtile xtile0
 

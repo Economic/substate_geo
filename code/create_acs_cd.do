@@ -1,3 +1,4 @@
+/*
 ********************************************************************************
 * Process ACS tables
 ********************************************************************************
@@ -84,7 +85,7 @@ assert educgroup ~= .
 * output: variable perwt0 perwt1 perwt2
 do ${code}calibrate_weights_acs_cd.do
 saveold ${output}acs_cd_calibratedweights.dta, replace version(13)
-
+*/
 
 ********************************************************************************
 * Impute wages based on CPS wage regression
@@ -108,7 +109,6 @@ do ${code}impute_wages_cpsreg.do
 * output: variable hrwage2
 do ${code}impute_wages_cpsloc.do
 
-
-keep adj_wkswork* age bpl citizen classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 majorind majorocc marst metro met2013 nchild nfams occ parent_* parttime pernum perwt0 perwt1 perwt2 poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year
+keep adj_wkswork* age bpl cd116 citizen classwkr classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 majorind majorocc marst metro met2013 nchild nfams occ parent_* parttime pernum perwt0 perwt1 perwt2 poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year
 compress
 saveold ${output}acs_cd116.dta, replace version(13)

@@ -23,7 +23,7 @@ deploydata:
 	rm data/output/acs_cd116.dta.zip data/output/acs_state.dta.zip
 
 	# transfer extra
-	~/StatTransfer14_64/st data/output/acs_numkids.dta sas8 acs_numkids.sas7bdat
-	pigz -K acs_numkids.sas7bdat
-	rsync -avPh acs_numkids.sas7bdat.zip ~/mount/epiextracts/acs/
-	rm acs_numkids.sas7bdat.zip
+	~/StatTransfer14_64/st data/output/acs_numpeople.dta sas8 acs_numpeople.sas7bdat
+	pigz -K acs_numpeople.sas7bdat
+	rsync -avPh acs_numpeople.sas7bdat.zip ~/mount/epiextracts/acs/
+	rm acs_numpeople.sas7bdat.zip

@@ -32,13 +32,13 @@ global output data/output/
 * requires data: acs_prep.dta
 * requires code: impute_wages_cpsreg.do impute_wages_cpsloc.do
 * output: acs_tables_cd.dta acs_cd116.dta
-********************************************************************************
+*******************************************************************************
 *do ${code}create_acs_cd.do
 
 ********************************************************************************
 * post analysis
 ********************************************************************************
-do ${code}postanalysis.do
+*do ${code}postanalysis.do
 
 * analyze weights
 * requires: acs_tables.dta acs_cd116.dta
