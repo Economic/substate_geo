@@ -38,7 +38,7 @@ global output data/output/
 ********************************************************************************
 * post analysis
 ********************************************************************************
-do ${code}postanalysis.do
+*do ${code}postanalysis.do
 
 * analyze weights
 * requires: acs_tables.dta acs_cd116.dta
