@@ -121,7 +121,7 @@ tempfile acs
 save `acs'
 
 * CPS
-load_epiextracts, begin(2013m1) end(2017m12) sample(org)
+load_epiextracts, begin(2014m1) end(2018m12) sample(org)
 
 keep if wageotc > 0 & wageotc ~= .
 gen logwage = log(wageotc)
@@ -148,7 +148,7 @@ replace new_race = 4 if raceorig >= 3 & raceorig ~= .
 replace new_race = 3 if hispanic == 1
 assert new_race ~= .
 
-forvalues i=2/5 {
+forvalues i = 2/5 {
 	gen age`i' = age^`i'
 }
 
