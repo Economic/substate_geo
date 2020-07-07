@@ -91,11 +91,11 @@ assert majorind ~= .
 * Major occupation
 gen majorocc = .
 * Management, business, and financial occupations
-replace majorocc = 1 if 10 <= occ & occ <= 950
+replace majorocc = 1 if 10 <= occ & occ <= 960
 * Professional and related occupations
-replace majorocc = 2 if 1005 <= occ & occ <= 3540
+replace majorocc = 2 if 1005 <= occ & occ <= 3550
 * Service occupations
-replace majorocc = 3 if 3600 <= occ & occ <= 4650
+replace majorocc = 3 if 3600 <= occ & occ <= 4655
 * Sales and related occupations
 replace majorocc = 4 if 4700 <= occ & occ <= 4965
 * Office and administrative support occupations
@@ -103,13 +103,13 @@ replace majorocc = 5 if 5000 <= occ & occ <= 5940
 * Farming, fishing, and forestry occupations
 replace majorocc = 6 if 6005 <= occ & occ <= 6130
 * Construction and extraction occupations
-replace majorocc = 7 if 6200 <= occ & occ <= 6940
+replace majorocc = 7 if 6200 <= occ & occ <= 6950
 * Installation, maintenance, and repair occupations
-replace majorocc = 8 if 7000 <= occ & occ <= 7630
+replace majorocc = 8 if 7000 <= occ & occ <= 7640
 * Production occupations
-replace majorocc = 9 if 7700 <= occ & occ <= 8965
+replace majorocc = 9 if 7700 <= occ & occ <= 8990
 *	Transportation and material moving occupations
-replace majorocc = 10 if 9000 <= occ & occ <= 9750
+replace majorocc = 10 if 9000 <= occ & occ <= 9760
 assert majorocc ~= .
 
 * part/full-time
@@ -161,7 +161,7 @@ gen parttime = hoursu1i <= 34
 
 * gender-specific wage predictions
 forvalues i = 0 / 1 {
-	reg logwage age* i.new_educ i.new_race i.new_married i.majorind i.majorocc i.parttime i.year i.statefips [aw=orgwgt] if female == `i'
+	reg logwage age age2-age5 i.new_educ i.new_race i.new_married i.majorind i.majorocc i.parttime i.year i.statefips [aw=orgwgt] if female == `i'
 	eststo female`i'
 }
 
