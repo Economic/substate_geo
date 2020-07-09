@@ -1,6 +1,6 @@
 import delim ${acsdata}ACS_18_5YR_B23001_sex_age_cd.csv, varnames(1) rowrange(3) clear
-destring b23001*, replace
 gen cd116 = substr(geo_id, 10, 11)
+destring b23001*, replace
 rename b23001_007e male1619
 rename b23001_014e male2021
 rename b23001_021e male2224
@@ -49,8 +49,8 @@ save `age'
 
 foreach race in hispanic white black {
 	import delim ${acsdata}ACS_18_5YR_C23002_`race'_cd.csv, varnames(1) rowrange(3) clear
-	destring c23002*, replace
 	gen cd116 = substr(geo_id, 10, 11)
+	destring c23002*, replace
 	rename *_0* _.*
 	rename _07e emp`race'male1664
 	rename _13e emp`race'male6599
@@ -65,8 +65,8 @@ foreach race in hispanic white black {
 }
 
 import delim ${acsdata}ACS_18_5YR_B23006_educ_cd.csv, varnames(1) rowrange(3) clear
-destring b23006*, replace
 gen cd116 = substr(geo_id, 10, 11)
+destring b23006*, replace
 rename b23006_006e emplths
 rename b23006_013e emphs
 rename b23006_020e empscol
@@ -98,5 +98,11 @@ gen empnonhispanic6599 = empnonhispanicmale6599 + empnonhispanicfemale6599
 
 gen empedother = empmale + empfemale - (emplths + emphs + empscol + empcol)
 
+
+* going to drop unassigned 116 CD's (coded as "ZZ" in Census tables)
+* see https://www2.census.gov/census_2010/08-SF1_Congressional_Districts_116/0CD116_TechnicalDocumentation.pdf
+drop if substr(cd116, 3, 4) == "ZZ"
+destring cd116, replace
+
 * remove PR
-drop if cd116 == "7298"
+drop if cd116 == 7298

@@ -20,6 +20,7 @@ save `acsmicrodata'
 use ${output}acs_tables_cd.dta, clear
 levelsof cd116, local(cd116levels)
 
+
 foreach i of numlist `cd116levels' {
 	use if cd116 == `i' using ${output}acs_tables_cd.dta, clear
 
@@ -35,13 +36,6 @@ foreach i of numlist `cd116levels' {
 	* adjustment: move table BH6599 pop to BH1664
 	matrix rownames raceage = raceagegroup
 	matrix colnames raceage = _one:11 _one:12 _one:21 _one:22 _one:31 _one:32
-	if cd116 == 4903 {
-		replace empblack1664 = empblack1664 + empblack6599
-		replace empblack6599 = 0
-		mkmat empwhite1664 empwhite6599 empblack1664 empother1664 empother6599, matrix(raceage)
-		matrix rownames raceage = raceagegroup
-		matrix colnames raceage = _one:11 _one:12 _one:21 _one:31 _one:32
-	}
 	mat li raceage
 
 	* HISPANIC ETHNICITY-AGE

@@ -1,10 +1,7 @@
-/*
 ********************************************************************************
 * Process ACS tables
 ********************************************************************************
 do ${code}clean_acs_tables_cd.do
-* for now use CD115 demographics for 116th CDs:
-rename cd115 cd116
 saveold ${output}acs_tables_cd.dta, replace version(13)
 
 
@@ -85,7 +82,7 @@ assert educgroup ~= .
 * output: variable perwt0 perwt1 perwt2
 do ${code}calibrate_weights_acs_cd.do
 saveold ${output}acs_cd_calibratedweights.dta, replace version(13)
-*/
+
 
 ********************************************************************************
 * Impute wages based on CPS wage regression

@@ -1,6 +1,7 @@
 import delim ${acsdata}ACS_18_5YR_B23001_sex_age_state.csv, varnames(1) rowrange(3) clear
-destring b23001*, replace
 gen statefips = substr(geo_id, 10, 11)
+destring statefips, replace 
+destring b23001*, replace
 rename b23001_007e male1619
 rename b23001_014e male2021
 rename b23001_021e male2224
@@ -49,8 +50,9 @@ save `age'
 
 foreach race in hispanic white black {
 	import delim ${acsdata}ACS_18_5YR_C23002_`race'_state.csv, varnames(1) rowrange(3) clear
-	destring c23002*, replace
 	gen statefips = substr(geo_id, 10, 11)
+	destring statefips, replace
+	destring c23002*, replace
 	rename *_0* _.*
 	rename _07e emp`race'male1664
 	rename _13e emp`race'male6599
@@ -65,8 +67,9 @@ foreach race in hispanic white black {
 }
 
 import delim ${acsdata}ACS_18_5YR_B23006_educ_state.csv, varnames(1) rowrange(3) clear
-destring b23006*, replace
 gen statefips = substr(geo_id, 10, 11)
+destring statefips, replace
+destring b23006*, replace
 rename b23006_006e emplths
 rename b23006_013e emphs
 rename b23006_020e empscol
@@ -99,4 +102,4 @@ gen empnonhispanic6599 = empnonhispanicmale6599 + empnonhispanicfemale6599
 gen empedother = empmale + empfemale - (emplths + emphs + empscol + empcol)
 
 * remove PR
-drop if statefips == "72"
+drop if statefips == 72
