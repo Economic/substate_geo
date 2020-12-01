@@ -27,7 +27,7 @@ rename b23001_149e female6061
 rename b23001_156e female6264
 rename b23001_161e female6569
 rename b23001_166e female7074
-rename b23001_173e female7599
+rename b23001_171e female7599
 
 gen emp1619 = male1619 + female1619
 gen emp2024 = male2021 + male2224 + female2021 + female2224
@@ -55,7 +55,7 @@ foreach race in hispanic white black {
 	destring c23002*, replace
 	rename *_0* _.*
 	rename _07e emp`race'male1664
-	rename _13e emp`race'male6599
+	rename _12e emp`race'male6599
 	rename _20e emp`race'female1664
 	rename _25e emp`race'female6599
 	gen emp`race'1664 = emp`race'male1664 + emp`race'female1664
