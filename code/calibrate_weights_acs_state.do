@@ -1,6 +1,6 @@
 * 0th stage adjustment:
-* scale to single year (divide by 5 years)
-gen perwt0 = perwt / 5
+* no need to scale to single year, as we're using 5-year ACS
+gen perwt0 = perwt
 drop perwt
 
 * 1st stage adjustment:
