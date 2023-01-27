@@ -17,7 +17,7 @@ save `acspctile'
 
 * grab pctiles from CPS
 * going to stick with one year of data right now... not sure this is best.
-load_epiextracts, begin(2018m1) end(2018m12) sample(org) keep(wageotc statefips)
+load_epiextracts, begin(2021m1) end(2021m12) sample(org) keep(wageotc statefips) sourcedir(/data/cps/org/epi)
 keep if wageotc > 0 & wageotc ~= .
 binipolate wageotc [pw=orgwgt], binsize(0.25) p(1(1)99) by(statefips) collapsefun(gcollapse)
 rename percentile xtile

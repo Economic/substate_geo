@@ -6,9 +6,9 @@
 ********************************************************************************
 * Load IPUMS ACS
 ********************************************************************************
-!gunzip -k ${acsdata}usa_00046.dta.gz
-use ${acsdata}usa_00046.dta, clear
-erase ${acsdata}usa_00046.dta
+!gunzip -k ${acsdata}usa_00058.dta.gz
+use ${acsdata}usa_00058.dta, clear
+erase ${acsdata}usa_00058.dta
 
 replace year = multyear 
 

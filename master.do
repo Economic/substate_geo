@@ -17,7 +17,7 @@ global output data/output/
 * requires code: impute_weeksworked.do
 * output data: acs_prep.dta
 ********************************************************************************
-*do ${code}create_acs_prep.do
+do ${code}create_acs_prep.do
 
 ********************************************************************************
 * create ACS state dataset
@@ -25,7 +25,7 @@ global output data/output/
 * requires code: impute_wages_cpsreg.do impute_wages_cpsloc.do
 * output: acs_tables_state.dta acs_state.dta
 *********************************************************************************
-*do ${code}create_acs_state.do
+do ${code}create_acs_state.do
 
 ********************************************************************************
 * create ACS CD dataset

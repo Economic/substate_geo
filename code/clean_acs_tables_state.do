@@ -1,4 +1,4 @@
-import delim ${acsdata}ACS_18_5YR_B23001_sex_age_state.csv, varnames(1) rowrange(3) clear
+import delim ${acsdata}ACS_19_5YR_B23001_sex_age_state.csv, varnames(1) rowrange(3) clear
 gen statefips = substr(geo_id, 10, 11)
 destring statefips, replace 
 destring b23001*, replace
@@ -49,7 +49,7 @@ tempfile age
 save `age'
 
 foreach race in hispanic white black {
-	import delim ${acsdata}ACS_18_5YR_C23002_`race'_state.csv, varnames(1) rowrange(3) clear
+	import delim ${acsdata}ACS_19_5YR_C23002_`race'_state.csv, varnames(1) rowrange(3) clear
 	gen statefips = substr(geo_id, 10, 11)
 	destring statefips, replace
 	destring c23002*, replace
@@ -66,7 +66,7 @@ foreach race in hispanic white black {
 	save ``race''
 }
 
-import delim ${acsdata}ACS_18_5YR_B23006_educ_state.csv, varnames(1) rowrange(3) clear
+import delim ${acsdata}ACS_19_5YR_B23006_educ_state.csv, varnames(1) rowrange(3) clear
 gen statefips = substr(geo_id, 10, 11)
 destring statefips, replace
 destring b23006*, replace

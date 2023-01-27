@@ -123,9 +123,9 @@ save `acs'
 ********************************************************************************
 *  Load IPUMS March CPS for training
 ********************************************************************************
-!gunzip -k ${miscdata}cps_00071.dta.gz
-use ${miscdata}cps_00071.dta, clear
-erase ${miscdata}cps_00071.dta
+!gunzip -k ${miscdata}cps_00087.dta.gz
+use ${miscdata}cps_00087.dta, clear
+erase ${miscdata}cps_00087.dta
 
 * keep 16+ positive wage earners with weeks worked
 keep if age > = 16

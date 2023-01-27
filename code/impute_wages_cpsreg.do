@@ -121,7 +121,7 @@ tempfile acs
 save `acs'
 
 * CPS
-load_epiextracts, begin(2014m1) end(2018m12) sample(org)
+load_epiextracts, begin(2015m1) end(2019m12) sample(org) sourcedir(/data/cps/org/epi)
 
 keep if wageotc > 0 & wageotc ~= .
 gen logwage = log(wageotc)
