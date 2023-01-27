@@ -33,7 +33,7 @@ do ${code}create_acs_state.do
 * requires code: impute_wages_cpsreg.do impute_wages_cpsloc.do
 * output: acs_tables_cd.dta acs_cd116.dta
 *******************************************************************************
-do ${code}create_acs_cd.do
+*do ${code}create_acs_cd.do
 
 ********************************************************************************
 * post analysis
