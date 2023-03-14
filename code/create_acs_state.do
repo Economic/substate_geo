@@ -82,4 +82,4 @@ do ${code}impute_wages_cpsloc.do
 
 keep adj_wkswork* age bpl citizen classwkr classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 majorind majorocc marst metro met2013 nchild nfams occ parent_* parttime pernum perwt0 perwt1 perwt2 poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year
 compress
-saveold ${output}acs_state_cps_2021_dist.dta, replace version(13)
+saveold ${output}acs_state_cps_2022_dist.dta, replace version(13)

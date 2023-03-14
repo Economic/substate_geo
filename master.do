@@ -17,7 +17,7 @@ global output data/output/
 * requires code: impute_weeksworked.do
 * output data: acs_prep.dta
 ********************************************************************************
-do ${code}create_acs_prep.do
+*do ${code}create_acs_prep.do
 
 ********************************************************************************
 * create ACS state dataset
