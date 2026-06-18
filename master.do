@@ -16,6 +16,8 @@ global output data/output/
 * requires data: usa_XXXXX.dta.gz
 * requires code: impute_weeksworked.do
 * output data: acs_prep.dta
+* requires package estout: install with ssc install estout
+* requires package ipfraking: install with ssc install ipfraking
 ********************************************************************************
 do ${code}create_acs_prep.do
 
